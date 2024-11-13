@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Range Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Body styling */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        /* Page Heading */
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #444;
+            text-align: center;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        form label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        form select, form button {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        form button {
+            background-color: #28a745;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        /* Chart Container */
+        #priceRangeChart {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Price Range Statistics for <%= data ? data.month : 'Selected Month' %></h1>
+
+    <!-- Form to select month -->
+    <form id="statsForm" action="/price-range-stats" method="GET">
+        <label for="month">Select a Month:</label>
+        <select name="month" id="month" required>
+            <option value="">Select Month</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </select>
+        <button type="submit">Get Statistics</button>
+    </form>
+
+    <!-- Bar Chart Canvas -->
+    <canvas id="priceRangeChart"></canvas>
+
+    <script>
+        // Only create the chart if data is available
+        <% if (data) { %>
+            const data = <%- JSON.stringify(data) %>;
+
+            // Create a bar chart using Chart.js
+            const ctx = document.getElementById('priceRangeChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.priceRanges.map(item => item.range),
+                    datasets: [{
+                        label: 'Number of Products',
+                        data: data.priceRanges.map(item => item.count),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        <% } else { %>
+            document.getElementById('priceRangeChart').style.display = 'none'; // Hide the chart canvas if no data
+        <% } %>
+    </script>
+</body>
+</html>
+

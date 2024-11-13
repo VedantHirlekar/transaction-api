@@ -1,0 +1,36 @@
+
+<!-- views/statistics.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Statistics</title>
+</head>
+<body>
+    <h1>Product Statistics</h1>
+    
+    <!-- Form for selecting year and month -->
+    <form action="/statistics" method="GET">
+        <label for="year">Year:</label>
+        <input type="number" name="year" id="year" required>
+
+        <label for="month">Month:</label>
+        <input type="text" name="month" id="month" required>
+
+        <button type="submit">Get Statistics</button>
+    </form>
+
+    <% if (stats) { %>
+        <h2>Statistics for <%= stats.month %> <%= stats.year %></h2>
+        <p><strong>Total Sales Amount:</strong> $<%= stats.totalSales %></p>
+        <p><strong>Total Sold Items:</strong> <%= stats.soldCount %></p>
+        <p><strong>Total Unsold Items:</strong> <%= stats.unsoldCount %></p>
+    <% } else { %>
+        <p>Please enter the year and month to view statistics.</p>
+    <% } %>
+
+</body>
+</html>
+

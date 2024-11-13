@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Transactions</title>
+  <style>
+    /* General body and container styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Style for the form */
+form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+form input[type="text"], form input[type="number"] {
+  padding: 10px;
+  font-size: 1rem;
+  margin: 0 10px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #4cae4c;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table th, table td {
+  padding: 9px 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table td {
+  word-wrap: break-word;
+}
+
+/* Pagination Styles */
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  padding: 8px 16px;
+  margin: 0 5px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.pagination a:hover {
+  background-color: #0056b3;
+}
+
+.pagination a:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination a.active {
+  background-color: #28a745;
+  font-weight: bold;
+}
+
+.pagination a.active:hover {
+  background-color: #218838;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  form input[type="text"], form input[type="number"] {
+    width: 150px;
+  }
+
+  table th, table td {
+    padding: 8px 10px;
+  }
+
+  .pagination a {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <h1>Product Transactions</h1>
+  
+  <form action="/transactions-page" method="get">
+    <input type="text" name="search" value="<%= search %>" placeholder="Search by title, description, or price" />
+    <input type="number" name="page" value="<%= currentPage %>" hidden />
+    <input type="number" name="perPage" value="<%= perPage %>" hidden />
+    <button type="submit">Search</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Sold</th>
+        <th>Date of Sale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(product => { %>
+        <tr>
+          <td><%= product.title %></td>
+          <td><%= product.price %></td>
+          <td><%= product.description %></td>
+          <td><%= product.category %></td>
+          <td><%= product.sold ? 'Yes' : 'No' %></td>
+          <td><%= product.year %> - <%= product.month %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <% if (currentPage > 1) { %>
+      <a href="/transactions-page?page=<%= currentPage - 1 %>&perPage=<%= perPage %>&search=<%= search %>">Previous</a>
+    <% } %>
+    
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="/transactions-page?page=<%= i %>&perPage=<%= perPage %>&search=<%= search %>"><%= i %></a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="/transactions-page?page=<%= currentPage + 1 %>&perPage=<%= perPage %>&search=<%= search %>">Next</a>
+    <% } %>
+  </div>
+</body>
+</html>

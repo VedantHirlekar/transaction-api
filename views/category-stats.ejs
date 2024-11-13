@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #444;
+            font-size: 24px;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #categoryChart {
+            
+            width: 25%;
+            height: 100px;
+            margin: 20px auto;
+        }
+
+        
+
+        /* Center the form and pie chart */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Category Statistics for <span id="selectedMonth"><%= month %></span></h1>
+
+        <!-- Form to select month -->
+        <form action="/category-stats" method="GET">
+            <label for="month">Select a Month:</label>
+            <select name="month" id="month" required>
+                <option value="">Select Month</option>
+                <option value="January" <%= month === 'January' ? 'selected' : '' %>>January</option>
+                <option value="February" <%= month === 'February' ? 'selected' : '' %>>February</option>
+                <option value="March" <%= month === 'March' ? 'selected' : '' %>>March</option>
+                <option value="April" <%= month === 'April' ? 'selected' : '' %>>April</option>
+                <option value="May" <%= month === 'May' ? 'selected' : '' %>>May</option>
+                <option value="June" <%= month === 'June' ? 'selected' : '' %>>June</option>
+                <option value="July" <%= month === 'July' ? 'selected' : '' %>>July</option>
+                <option value="August" <%= month === 'August' ? 'selected' : '' %>>August</option>
+                <option value="September" <%= month === 'September' ? 'selected' : '' %>>September</option>
+                <option value="October" <%= month === 'October' ? 'selected' : '' %>>October</option>
+                <option value="November" <%= month === 'November' ? 'selected' : '' %>>November</option>
+                <option value="December" <%= month === 'December' ? 'selected' : '' %>>December</option>
+            </select>
+            <button type="submit">Get Statistics</button>
+        </form>
+
+        <!-- Pie Chart Canvas -->
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        let chart;
+
+        // Only create the chart if data is available
+        <% if (categoryStats.length > 0) { %>
+            const categoryStats = <%- JSON.stringify(categoryStats) %>;
+
+            const labels = categoryStats.map(stat => stat.category);
+            const counts = categoryStats.map(stat => stat.count);
+
+            // If chart already exists, destroy it to create a new one
+            if (chart) chart.destroy();
+
+            // Create a new pie chart with updated data
+            chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ],
+                        hoverBackgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + ' items';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        <% } else { %>
+            // Hide the chart if no data is available
+            document.getElementById('categoryChart').style.display = 'none';
+        <% } %>
+    </script>
+</body>
+</html>
+
